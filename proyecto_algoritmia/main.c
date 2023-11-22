@@ -4,12 +4,12 @@
 
 void font_colour(short int colour){
     /*
-        (rgb) 100 -> (255,0,0)   rojo
-        (rgb) 010 -> (0,255,0)   verde
-        (rgb) 001 -> (0,0,255)   azul
-        (rgb) 110 -> (255,255,0) amarillo
-        (rgb) 011 -> (0,255,255) cyan
-        (rgb) 000 -> (0,0,0)     negro
+        (rgb) 100 -> (255,0,0)     rojo
+        (rgb) 010 -> (0,255,0)     verde
+        (rgb) 001 -> (0,0,255)     azul
+        (rgb) 110 -> (255,255,0)   amarillo
+        (rgb) 011 -> (0,255,255)   cyan
+        (rgb) 111 -> (255,255,255) blanco
     */
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
