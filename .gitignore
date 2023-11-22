@@ -1,0 +1,7 @@
+*.cbp
+proyecto_algoritmia/*.cbp
+/*.cbp
+proyecto_algoritmia/bin/
+proyecto_algoritmia/obj/
+proyecto_algoritmia/proyecto_algoritmia.depend
+proyecto_algoritmia/proyecto_algoritmia.layout
