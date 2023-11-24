@@ -11,6 +11,7 @@
 const short int red=100, green=010, blue=001, yellow=110, cyan=011, original=111;
 const char create='c', read='r', update='u', delete='d'; // CRUD
 
+/*Cambio de colores en la consola*/
 void font_colour(short int colour){
     /*
         (rgb) 100 -> (255,0,0)     rojo
@@ -79,13 +80,22 @@ void show_sec_actions_menu(char action){
         printf("\t-- ELIMINAR --\n");
     }
     font_colour(original);
-    printf("\t(1) Producto\n\t(2) Vendedor\n\t(3) Zona\n");
+    if(action!='d'){
+        printf("\t(1) Producto\n\t(2) Vendedor\n\t(3) Zona\n");
+    } else {
+        /*La zona no puede eliminarse*/
+        printf("\t(1) Producto\n\t(2) Vendedor\n");
+    }
     font_colour(yellow);
     printf("Ingrese \"0\" para salir");
     font_colour(original);
     printf("\n> ");
 }
 
+/*
+Menu listado de productos, segun action cambiara el proposito del menu
+Recibe los ID de los productos y sus nombres para mostrar
+*/
 void show_product_menu(char action, short int id[5], char *name[5]){
     short int i;
     printf("Escriba el ID del producto que desea ");
@@ -104,6 +114,9 @@ void show_product_menu(char action, short int id[5], char *name[5]){
     printf("\n> ");
 }
 
+/*
+Lo mismo que lo anterior para los vendedores
+*/
 void show_seller_menu(char action, short int id[5], char *name[5]){
     short int i;
     printf("Escriba el ID del vendedor que desea ");
@@ -122,14 +135,13 @@ void show_seller_menu(char action, short int id[5], char *name[5]){
     printf("\n> ");
 }
 
-void show_zone_menu(char action, short int id[5], char *name[5]){
+/*
+Lo mismo para las zonas. Las zonas no se eliminan, asi que no hay alternativas
+*/
+void show_zone_menu(short int id[5], char *name[5]){
     short int i;
-    printf("Escriba el ID de la zona que desea ");
-    if (action == 'u') {
-        printf("modificar:\n");
-    } else if (action == 'd') {
-        printf("eliminar:\n");
-    }
+    printf("Escriba el ID de la zona que desea modificar:\n");
+    
     font_colour(cyan);
     for(i=0; i<5; i++){
         printf("\t(%d) %s\n", id[i], name[i]);
@@ -140,8 +152,10 @@ void show_zone_menu(char action, short int id[5], char *name[5]){
     printf("\n> ");
 }
 
-//delete
 /*MOSTRAR*/
+/*
+Toma todos los datos relacionados a los productos y los muestra en un formato definido, lo mismo para vendedores y zonas. El formato puede cambiarse
+*/
 void print_products(short int id[5], char *name[5], char *type[5], float purchPrice[5], float sellPrice[5], float revenue[5], short int amountSold[5]) {
     short int i;
     font_colour(cyan);
@@ -200,6 +214,10 @@ void print_zones(short int id[5], char *name[5], short int amountSold[5], float 
 }
 
 /*INSERTAR*/
+/*
+(Explicacion del funcionamiento de los void mas abajo)
+Recolecta los datos de los productos, vendedores y zonas y los almacena en sus arrays
+*/
 void enterProductData(short int i, char *name[5], char *type[5], float purchPrice[5], float sellPrice[5], float revenue[5]) {
     name[i] = (char *)malloc(MAX_PRODUCT_NAME_LENGTH + 1);
     type[i] = (char *)malloc(MAX_PRODUCT_NAME_LENGTH + 1);
@@ -236,6 +254,7 @@ void enterProductData(short int i, char *name[5], char *type[5], float purchPric
     font_colour(original);
     scanf("%f", &sellPrice[i]);
 
+    // La ganancia se calcula automaticamente
     revenue[i] = sellPrice[i] - purchPrice[i];
 }
 
@@ -359,6 +378,9 @@ void updateZoneData(short int id, char *name) {
 }
 
 /*ELIMINAR*/
+/*
+"Eliminar" consiste en reiniciar todos los campos (sea a "" o a 0)
+*/
 void deleteProduct(short int id, char *name, char *type, float *purchPrice, float *sellPrice, float *revenue, short int *amountSold){
     *name='\0';
     *type='\0';
@@ -382,7 +404,9 @@ void deleteSeller(short int id, char *name, short int *amountSold, float *revenu
     font_colour(original);
 }
 
+
 int main() {
+    /*Declaracion de variables*/
     bool repeat = true;
 
     short int idSeller [10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -402,8 +426,10 @@ int main() {
     short int id;
     short int opc, i;
 
+    /*Mensaje de inicio, solo aparecera una vez*/
     welcome_message();
 
+    /*Recoleccion de datos inicial para productos, vendedores y zonas*/
     font_colour(blue);
     printf("-- PRODUCTOS --\n");
     font_colour(original);
@@ -425,24 +451,32 @@ int main() {
         enterZoneData(i, zoneName);
     }
 
+    /*Menu repetitivo de inicio*/
     while (repeat) {
         show_main_menu();
         scanf("%hd", &opc);
         switch (opc) {
         case 1: // INSERTAR -------------------------------------------------------
+            /*Menu de insertar, se muestran las 3 opciones*/
             show_sec_actions_menu(create);
             scanf("%hd", &opc);
             if(opc==1){
+                
+                /*Insertar > Producto*/
                 for (i = 0; i < 5; i++) {
                     enterProductData(i, prodName, prodType, prodPurchPrice, prodSellPrice, prodRevenue);
                 }
                 // print_products(idProd, prodName, prodType, prodPurchPrice, prodSellPrice, prodRevenue, prodAmountSold);
             } else if (opc==2){
+                
+                /*Insertar > Vendedor*/
                 for (i = 0; i < 10; i++) {
                     enterSellerData(i, sellerName);
                 }
                 // print_sellers(idSeller, sellerName, sellerAmountSold, sellerRevenue);
             } else if (opc==3){
+                
+                /*Insertar > Zona*/
                 for (i = 0; i < 5; i++) {
                     enterZoneData(i, zoneName);
                 }
@@ -453,13 +487,22 @@ int main() {
             break;
 
         case 2: // MOSTRAR--------------------------------------------------------
+            
+            /*Menu de mostrar, se muestran las 3 opciones*/
             show_sec_actions_menu(read);
             scanf("%hd", &opc);
+            
             if (opc == 1) {
+
+                /*Se muestran los 5 productos*/
                 print_products(idProd, prodName, prodType, prodPurchPrice, prodSellPrice, prodRevenue, prodAmountSold);
             } else if (opc == 2){
+
+                /*Se muestran los 10 vendedores*/
                 print_sellers(idSeller, sellerName, sellerAmountSold, sellerRevenue);
             } else if (opc == 3){
+
+                /*Se muestran las 5 zonas*/
                 print_zones(idZone, zoneName, zoneAmountSold, zoneRevenue);
             } else if (opc==0){
                 repeat=false;
@@ -467,12 +510,15 @@ int main() {
             break;
 
         case 3: // ACTUAIZAR -----------------------------------------------------
+            
+            /*Menu de actualizar, se muestran las 3 opciones*/
             show_sec_actions_menu(update);
             scanf("%hd", &opc);
             if(opc==1){
                 show_product_menu(update, idProd, prodName);
                 scanf("%hd", &id);
 
+                /*Si el id insertado esta dentro de rango, actualiza, sino muestra un mensaje de error*/
                 if(id>=1 && id<=5) {
                     updateProductData(idProd[id-1], prodName[id-1], prodType[id-1], &prodPurchPrice[id-1], &prodSellPrice[id-1], &prodRevenue[id-1]);
                 } else {
@@ -484,6 +530,7 @@ int main() {
                 show_seller_menu(update, idSeller, sellerName);
                 scanf("%hd", &id);
 
+                /*Si el id insertado esta dentro de rango, actualiza, sino muestra un mensaje de error*/
                 if(id>=1 && id<=10) {
                     updateSellerData(idSeller[id-1], sellerName[id-1]);
                 } else {
@@ -495,6 +542,7 @@ int main() {
                 show_zone_menu(update, idZone, zoneName);
                 scanf("%hd", &id);
 
+                /*Si el id insertado esta dentro de rango, actualiza, sino muestra un mensaje de error*/
                 if(id>=1 && id<=5) {
                     updateZoneData(idZone[id-1], zoneName[id-1]);
                 } else {
@@ -516,6 +564,7 @@ int main() {
                 show_product_menu(delete, idProd, prodName);
                 scanf("%hd", &id);
 
+                /*Si el id insertado esta dentro de rango, elimina, sino muestra un mensaje de error*/
                 if(id>=1 && id<=5) {
                     deleteProduct(idProd[id-1], prodName[id-1], prodType[id-1], &prodPurchPrice[id-1], &prodSellPrice[id-1], &prodRevenue[id-1], &prodAmountSold[id-1]);
                 } else {
@@ -527,6 +576,7 @@ int main() {
                 show_seller_menu(delete, idSeller, sellerName);
                 scanf("%hd", &id);
 
+                /*Si el id insertado esta dentro de rango, elimina, sino muestra un mensaje de error*/
                 if(id>=1 && id<=10) {
                     deleteSeller(idSeller[id-1], sellerName[id-1], &sellerAmountSold[id-1], &sellerRevenue[id-1]);
                 } else {
@@ -537,6 +587,8 @@ int main() {
             } else if (opc==0){
                 repeat=false;
             }
+            
+            /*La zona no puede eliminarse*/
             break;
         default:
             repeat=false;
