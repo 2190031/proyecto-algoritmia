@@ -6,7 +6,7 @@
 
 // variable = opcion != 'c';
 
-#define MAX_PRODUCT_NAME_LENGTH 25
+#define MAX_STR_INPUT_LENGTH 25
 
 const short int red=100, green=010, blue=001, yellow=110, cyan=011, original=111;
 const char create='c', read='r', update='u', delete='d'; // CRUD
@@ -141,7 +141,7 @@ Lo mismo para las zonas. Las zonas no se eliminan, asi que no hay alternativas
 void show_zone_menu(short int id[5], char *name[5]){
     short int i;
     printf("Escriba el ID de la zona que desea modificar:\n");
-    
+
     font_colour(cyan);
     for(i=0; i<5; i++){
         printf("\t(%d) %s\n", id[i], name[i]);
@@ -219,8 +219,8 @@ void print_zones(short int id[5], char *name[5], short int amountSold[5], float 
 Recolecta los datos de los productos, vendedores y zonas y los almacena en sus arrays
 */
 void enterProductData(short int i, char *name[5], char *type[5], float purchPrice[5], float sellPrice[5], float revenue[5]) {
-    name[i] = (char *)malloc(MAX_PRODUCT_NAME_LENGTH + 1);
-    type[i] = (char *)malloc(MAX_PRODUCT_NAME_LENGTH + 1);
+    name[i] = (char *)malloc(MAX_STR_INPUT_LENGTH + 1);
+    type[i] = (char *)malloc(MAX_STR_INPUT_LENGTH + 1);
 
     if (name[i] == NULL || type[i] == NULL) {
         // Handle allocation failure
@@ -237,12 +237,22 @@ void enterProductData(short int i, char *name[5], char *type[5], float purchPric
     font_colour(yellow);
     printf("\tNombre        > ");
     font_colour(original);
-    scanf("%s", name[i]);
+    fgets(name[i], MAX_STR_INPUT_LENGTH, stdin);
+    // scanf("%s", name[i]); // intentar con fgets(char *str, int max_no_chars, FILE *stream)
+    /*
+        fgets(name[i], maxlength, stdin);
+        // Remove the trailing newline character, if present
+        int length = strlen(name);
+        if (length > 0 && name[length - 1] == '\n') {
+            name[length - 1] = '\0';
+        }
+    */
 
     font_colour(yellow);
     printf("\tTipo          > ");
     font_colour(original);
-    scanf("%s", type[i]);
+    fgets(type[i], MAX_STR_INPUT_LENGTH, stdin);
+    // scanf("%s", type[i]);
 
     font_colour(yellow);
     printf("\tPrecio_compra > ");
@@ -259,7 +269,7 @@ void enterProductData(short int i, char *name[5], char *type[5], float purchPric
 }
 
 void enterSellerData(short int i, char *name[5]) {
-    name[i] = (char *)malloc(MAX_PRODUCT_NAME_LENGTH + 1);
+    name[i] = (char *)malloc(MAX_STR_INPUT_LENGTH + 1);
 
     if (name[i] == NULL) {
         // Handle allocation failure
@@ -276,11 +286,12 @@ void enterSellerData(short int i, char *name[5]) {
     font_colour(yellow);
     printf("\tNombre        > ");
     font_colour(original);
-    scanf("%s", name[i]);
+    fgets(name[i], MAX_STR_INPUT_LENGTH, stdin);
+    // scanf("%s", name[i]);
 }
 
 void enterZoneData(short int i, char *name[5]) {
-    name[i] = (char *)malloc(MAX_PRODUCT_NAME_LENGTH + 1);
+    name[i] = (char *)malloc(MAX_STR_INPUT_LENGTH + 1);
 
     if (name[i] == NULL) {
         // Handle allocation failure
@@ -297,7 +308,8 @@ void enterZoneData(short int i, char *name[5]) {
     font_colour(yellow);
     printf("\tNombre        > ");
     font_colour(original);
-    scanf("%s", name[i]);
+    fgets(name[i], MAX_STR_INPUT_LENGTH, stdin);
+    // scanf("%s", name[i]);
 }
 
 /*ACTUALIZAR*/
@@ -322,12 +334,14 @@ void updateProductData(short int id, char *name, char *type, float *purchPrice, 
     font_colour(yellow);
     printf("\tNombre        > (%s) ", name);
     font_colour(original);
-    scanf("%s", name);
+    fgets(name[i], MAX_STR_INPUT_LENGTH, stdin);
+    // scanf("%s", name);
 
     font_colour(yellow);
     printf("\tTipo          > (%s) ", type);
     font_colour(original);
-    scanf("%s", type);
+    fgets(type[i], MAX_STR_INPUT_LENGTH, stdin);
+    // scanf("%s", type);
 
     font_colour(yellow);
     printf("\tPrecio_compra > (%.2f) ", *purchPrice);
@@ -355,7 +369,8 @@ void updateSellerData(short int id, char *name) {
     font_colour(yellow);
     printf("\tNombre        > (%s) ", name);
     font_colour(original);
-    scanf("%s", name);
+    fgets(name[i], MAX_STR_INPUT_LENGTH, stdin);
+    // scanf("%s", name);
 
     font_colour(green);
     printf("\nVendedor actualizado correctamente\n");
@@ -370,7 +385,8 @@ void updateZoneData(short int id, char *name) {
     font_colour(yellow);
     printf("\tNombre        > (%s) ", name);
     font_colour(original);
-    scanf("%s", name);
+    fgets(name[i], MAX_STR_INPUT_LENGTH, stdin);
+    // scanf("%s", name);
 
     font_colour(green);
     printf("\nZona actualizada correctamente\n");
@@ -388,7 +404,7 @@ void deleteProduct(short int id, char *name, char *type, float *purchPrice, floa
     *sellPrice=0;
     *revenue=0;
     *amountSold=0;
-
+    // Reiniciar los valores de las ventas a futuro, y unidades vendidas
     font_colour(green);
     printf("\nProducto eliminado correctamente.\nPara volver a insertar un nuevo producto en esta posicion, debera ir a la seccion de \"Actualizar\" en el menu principal.\n");
     font_colour(original);
@@ -398,7 +414,7 @@ void deleteSeller(short int id, char *name, short int *amountSold, float *revenu
     *name='\0';
     *revenue=0;
     *amountSold=0;
-
+    // Reiniciar los valores de las ventas a futuro, y unidades vendidas
     font_colour(green);
     printf("\nVendedor eliminado correctamente.\nPara volver a insertar un nuevo vendedor en esta posicion, debera ir a la seccion de \"Actualizar\" en el menu principal.\n");
     font_colour(original);
@@ -461,21 +477,21 @@ int main() {
             show_sec_actions_menu(create);
             scanf("%hd", &opc);
             if(opc==1){
-                
+
                 /*Insertar > Producto*/
                 for (i = 0; i < 5; i++) {
                     enterProductData(i, prodName, prodType, prodPurchPrice, prodSellPrice, prodRevenue);
                 }
                 // print_products(idProd, prodName, prodType, prodPurchPrice, prodSellPrice, prodRevenue, prodAmountSold);
             } else if (opc==2){
-                
+
                 /*Insertar > Vendedor*/
                 for (i = 0; i < 10; i++) {
                     enterSellerData(i, sellerName);
                 }
                 // print_sellers(idSeller, sellerName, sellerAmountSold, sellerRevenue);
             } else if (opc==3){
-                
+
                 /*Insertar > Zona*/
                 for (i = 0; i < 5; i++) {
                     enterZoneData(i, zoneName);
@@ -487,11 +503,11 @@ int main() {
             break;
 
         case 2: // MOSTRAR--------------------------------------------------------
-            
+
             /*Menu de mostrar, se muestran las 3 opciones*/
             show_sec_actions_menu(read);
             scanf("%hd", &opc);
-            
+
             if (opc == 1) {
 
                 /*Se muestran los 5 productos*/
@@ -510,7 +526,7 @@ int main() {
             break;
 
         case 3: // ACTUAIZAR -----------------------------------------------------
-            
+
             /*Menu de actualizar, se muestran las 3 opciones*/
             show_sec_actions_menu(update);
             scanf("%hd", &opc);
@@ -539,7 +555,7 @@ int main() {
                     font_colour(original);
                 }
             } else if (opc==3){
-                show_zone_menu(update, idZone, zoneName);
+                show_zone_menu(idZone, zoneName);
                 scanf("%hd", &id);
 
                 /*Si el id insertado esta dentro de rango, actualiza, sino muestra un mensaje de error*/
@@ -587,7 +603,7 @@ int main() {
             } else if (opc==0){
                 repeat=false;
             }
-            
+
             /*La zona no puede eliminarse*/
             break;
         default:
@@ -595,5 +611,10 @@ int main() {
             break;
         }
     }
+
+    //free(sellerName);
+    //free(prodName);
+    //free(zoneName);
+    //free(prodType);
     return 0;
 }
